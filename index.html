@@ -17,12 +17,12 @@
         </header>
         <section class="mx-40 mt-5 bg-white">
             <form class="flex flex-col" id="blog-form" novalidate>
-                <label class="flex flex-col text-4xl gap-4 mx-10 mt-10" for="post-title">Title
-                    <input class="text-3xl" type="text" name="post-title" id="post-title">
-                </label>
-                <label class="flex flex-col text-4xl gap-4 m-10" for="post-content">Content
-                    <textarea class="text-lg h-30" name="post-content" id="post-content"></textarea>
-                </label>
+                <label class="flex flex-col text-4xl gap-4 mx-10 mt-10" for="post-title">Title</label>
+                <input class="text-3xl" type="text" name="post-title" id="post-title">
+                <span class="error-message" id="title-error"></span>
+                <label class="flex flex-col text-4xl gap-4 m-10" for="post-content">Content</label>
+                <textarea class="text-lg h-30" name="post-content" id="post-content"></textarea>
+                <span class="error-message" id="content-error"></span>
             </form>
         </section>
         <section class="flex flex-col h-screen mx-20 bg-white">
