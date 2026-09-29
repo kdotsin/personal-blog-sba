@@ -28,7 +28,7 @@ blogContent.addEventListener('click', handleRemoveBtn);
 
 function addPost(obj) {
     for (let i = 0; i < postList.length; i++) {
-        if (obj.id == postList.length) {
+        if (obj.name == postList[i].name || obj.id == postList[i].id) {
             return;
         }
     }
