@@ -32,6 +32,8 @@ function handleSubmitBtn(e) {
     }
     addPost(postObj);
     displayContent()
+    titleInput.value = '';
+    contentInput.value = '';
 }
 
 function displayContent() {
