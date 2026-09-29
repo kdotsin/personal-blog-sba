@@ -24,11 +24,11 @@ contentInput.addEventListener('input', function(e) {
 
 blogForm.addEventListener('submit', handleSubmitBtn);
 
-blogContent.addEventListener('click', handleRemoveBtn);
+blogContent.addEventListener('click', handleContentEvents);
 
 function addPost(obj) {
     for (let i = 0; i < postList.length; i++) {
-        if (obj.name == postList[i].name || obj.id == postList[i].id) {
+        if (obj.title == postList[i].title || obj.id == postList[i].id) {
             return;
         }
     }
@@ -57,10 +57,14 @@ function handleSubmitBtn(e) {
     contentInput.value = '';
 }
 
-function handleRemoveBtn(e) {
-    if (e.target.tagName == 'BUTTON') {
+function handleContentEvents(e) {
+    if (e.target.id == 'remove-btn') {
         const targetId = e.target.closest('li').dataset.id;
         deletePost(targetId);
+    }
+
+    if (e.target.id == 'edit-btn') {
+        console.log('oh no')
     }
 }
 
@@ -74,6 +78,8 @@ function displayContent() {
         const blog = document.createElement('div');
         const blogEdit = createBtnClass();
         const blogRm = createBtnClass();
+        blogRm.id = 'remove-btn'
+        blogEdit.id = 'edit-btn'
         blogContainer.dataset.id = postList[i].id;
         blogTitle.textContent = postList[i].title;
         blogContainer.className = 'flex justify-between gap-2';
