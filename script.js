@@ -14,9 +14,7 @@ window.addEventListener('load', function(e) {
 
 titleInput.addEventListener('input', function(e) {
     validInput(titleInput);
-    console.log(titleError);
     titleError.textContent = titleInput.validationMessage;
-    console.log(titleError.textContent)
 })
 
 contentInput.addEventListener('input', function(e) {
@@ -25,6 +23,8 @@ contentInput.addEventListener('input', function(e) {
 })
 
 blogForm.addEventListener('submit', handleSubmitBtn);
+
+blogContent.addEventListener('click', handleRemoveBtn);
 
 function addPost(obj) {
     for (let i = 0; i < postList.length; i++) {
@@ -57,36 +57,48 @@ function handleSubmitBtn(e) {
     contentInput.value = '';
 }
 
+function handleRemoveBtn(e) {
+    if (e.target.tagName == 'BUTTON') {
+        const targetId = e.target.closest('li').dataset.id;
+        deletePost(targetId);
+    }
+}
+
 function displayContent() {
     blogContent.innerHTML = ''
     for (let i = 0; i < postList.length; i++) {
         const blogContainer = document.createElement('li');
         const blogTitle = document.createElement('h1');
-        const blogBody = document.createElement('p');
+        const blogBody = document.createElement('span');
         const blogBtns = document.createElement('div');
+        const blog = document.createElement('div');
         const blogEdit = createBtnClass();
         const blogRm = createBtnClass();
         blogContainer.dataset.id = postList[i].id;
         blogTitle.textContent = postList[i].title;
-        blogTitle.className = 'flex justify-between'
+        blogContainer.className = 'flex justify-between gap-2';
+        blogTitle.className = 'text-4xl font-bold text-slate-800 tracking-tight break-words';
+        blogBody.className = 'text-xs font-medium text-slate-400'
         blogBody.textContent = postList[i].content;
+        blogBody.className = 'break-words'
         blogEdit.textContent = 'Edit';
         blogRm.textContent = 'Remove';
-        blogContainer.append(blogTitle, blogBody);
-        blogContent.append(blogContainer);
+        blogBtns.className = 'flex items-center gap-2'
+        blog.append(blogTitle, blogBody);
         blogBtns.append(blogEdit, blogRm);
-        blogTitle.append(blogBtns);
+        blogContainer.append(blog, blogBtns);
+        blogContent.append(blogContainer);
     }
 }
 
 function createBtnClass() {
     const button = document.createElement('button');
     button.className = `
-    bg-indigo-600 hover:bg-indigo-500 
-    text-white font-medium px-5 py-2.5
+    text-center bg-indigo-600 hover:bg-indigo-500 
+    text-white font-sm px-5 py-2.5
     rounded-lg shadow-md hover:shadow-indigo-500/25 
     active:scale-95 transition-all duration-200 focus:outline-none
-    focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 w-25
+    focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2
     `
     return button;
 }
@@ -101,4 +113,16 @@ function validInput(input) {
     } else if (input.validity.tooShort) {
         input.setCustomValidity(`Input too short. Must be at least ${input.minLength} characters`)
     }
+}
+
+function deletePost(id) {
+    let newList = [];
+    for (let i = 0; i < postList.length; i++) {
+        if (id == postList[i].id) {
+            continue;
+        }
+        newList.push(postList[i]);
+    }
+    postList = newList;
+    displayContent();
 }
