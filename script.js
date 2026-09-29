@@ -12,6 +12,18 @@ window.addEventListener('load', function(e) {
     console.log('logic for displaying previous posts')
 })
 
+titleInput.addEventListener('input', function(e) {
+    validInput(titleInput);
+    console.log(titleError);
+    titleError.textContent = titleInput.validationMessage;
+    console.log(titleError.textContent)
+})
+
+contentInput.addEventListener('input', function(e) {
+    validInput(contentInput);
+    contentError.textContent = contentInput.validationMessage;
+})
+
 blogForm.addEventListener('submit', handleSubmitBtn);
 
 function addPost(obj) {
@@ -25,6 +37,15 @@ function addPost(obj) {
 
 function handleSubmitBtn(e) {
     e.preventDefault();
+    validInput(titleInput);
+    validInput(contentInput);
+
+    if (!blogForm.checkValidity()) {
+        blogForm.reportValidity();
+        alert('Post invalid');
+        return;
+    }
+
     let postObj = {
         id: postId++,
         title: titleInput.value,
@@ -68,4 +89,16 @@ function createBtnClass() {
     focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 w-25
     `
     return button;
+}
+
+function validInput(input) {
+    input.setCustomValidity('');
+    const label = input.labels[0];
+    if (input.validity.typeMismatch) {
+        input.setCustomValidity(`Please enter valid ${label.textContent}`);
+    } else if (input.validity.valueMissing) {
+        input.setCustomValidity(`Please enter the ${label.textContent}`);
+    } else if (input.validity.tooShort) {
+        input.setCustomValidity(`Input too short. Must be at least ${input.minLength} characters`)
+    }
 }
