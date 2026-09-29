@@ -42,12 +42,30 @@ function displayContent() {
         const blogContainer = document.createElement('li');
         const blogTitle = document.createElement('h1');
         const blogBody = document.createElement('p');
-        const blogEdit = document.createElement('button'); //for edit
-        const blogRm = document.createElement('button') //for remove
+        const blogBtns = document.createElement('div');
+        const blogEdit = createBtnClass();
+        const blogRm = createBtnClass();
         blogContainer.dataset.id = postList[i].id;
         blogTitle.textContent = postList[i].title;
+        blogTitle.className = 'flex justify-between'
         blogBody.textContent = postList[i].content;
-        blogContainer.append(blogTitle, blogBody, blogEdit);
+        blogEdit.textContent = 'Edit';
+        blogRm.textContent = 'Remove';
+        blogContainer.append(blogTitle, blogBody);
         blogContent.append(blogContainer);
+        blogBtns.append(blogEdit, blogRm);
+        blogTitle.append(blogBtns);
     }
+}
+
+function createBtnClass() {
+    const button = document.createElement('button');
+    button.className = `
+    bg-indigo-600 hover:bg-indigo-500 
+    text-white font-medium px-5 py-2.5
+    rounded-lg shadow-md hover:shadow-indigo-500/25 
+    active:scale-95 transition-all duration-200 focus:outline-none
+    focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 w-25
+    `
+    return button;
 }
