@@ -2,8 +2,8 @@ const titleInput = document.querySelector('#post-title');
 const contentInput = document.querySelector('#post-content');
 const blogForm = document.querySelector('#blog-form');
 const blogContent = document.getElementById('blog-content')
-const titleError = document.getElementById('title-error');
-const contentError = document.getElementById('content-error');
+const titleError = document.querySelector('.title-error');
+const contentError = document.querySelector('.content-error');
 const savedData = localStorage.getItem('blogPosts');
 let postList = savedData ? JSON.parse(savedData) : [];
 let postId = savedData ? JSON.parse(savedData).id : 0;
@@ -63,7 +63,6 @@ function handleContentEvents(e) {
         const targetId = e.target.closest('li').dataset.id;
         deletePost(targetId);
     } else if (e.target.id == 'edit-btn') {
-        console.log(e.target.id)
         const container = e.target.closest('li');
         const bodyContainer = container.querySelector('#body-container');
         const btnContainer = container.querySelector('#btn-container');
@@ -71,8 +70,18 @@ function handleContentEvents(e) {
         const spanElement = container.querySelector('span');
         const newTitleInput = document.createElement('input');
         const newSpanInput = document.createElement('input');
+        const errorTitleElement = createErrorClass();
+        const errorSpanElement = createErrorClass();
+        errorTitleElement.classList.add('title-error');
+        errorSpanElement.classList.add('content-error');
         newTitleInput.id = 'new-title';
+        newTitleInput.required = true;
+        newTitleInput.minLength = 3;
+        newTitleInput.name = 'title';
         newSpanInput.id = 'new-span'
+        newSpanInput.required = true;
+        newSpanInput.minLength = 10;
+        newSpanInput.name = 'content'
         const newYesBtn = createBtnClass();
         const newNoBtn = createBtnClass();
         newYesBtn.id = 'yes-btn';
@@ -82,7 +91,7 @@ function handleContentEvents(e) {
         newTitleInput.value = titleElement.textContent;
         newSpanInput.value = spanElement.textContent;
         btnContainer.replaceChildren(newNoBtn, newYesBtn);
-        bodyContainer.replaceChildren(newTitleInput, newSpanInput);
+        bodyContainer.replaceChildren(newTitleInput, errorTitleElement, newSpanInput, errorSpanElement);
     } else if (e.target.id == 'no-btn') {
         const container = e.target.closest('li');
         const postContainer = container.querySelector('#body-container');
@@ -103,17 +112,27 @@ function handleContentEvents(e) {
     } else if (e.target.id == 'yes-btn') {
         const container = e.target.closest('li');
         const id = container.dataset.id;
-        const titleContent = container.querySelector('#new-title').value;
-        const bodyContent = container.querySelector('#new-span').value;
+        const titleContent = container.querySelector('#new-title');
+        const bodyContent = container.querySelector('#new-span');
         const postContainer = container.querySelector('#body-container');
         const btnContainer = container.querySelector('#btn-container');
+        const errorTitle = container.querySelector('.title-error');
+        const errorSpan = container.querySelector('.content-error');
         const newEditBtn = createBtnClass();
         const newRmBtn = createBtnClass();
         const title = createTitleClass();
         const span = createSpanClass();
-        console.log(`id ${id} title ${titleContent} body ${bodyContent}`)
-        console.log(postList);
-        changePostValues(id, titleContent, bodyContent);
+        validInput(titleContent);
+        errorTitle.textContent = titleContent.validationMessage;
+        validInput(bodyContent);
+        errorSpan.textContent = bodyContent.validationMessage;
+
+        if (!titleContent.checkValidity() || !bodyContent.checkValidity()) {
+            alert('correctly edit the post');
+            return
+        }
+
+        changePostValues(id, titleContent.value, bodyContent.value);
         const newPost = searchPost(id);
         newEditBtn.textContent = 'Edit';
         newEditBtn.id = 'edit-btn';
@@ -151,6 +170,7 @@ function displayContent() {
         blogContainer.dataset.id = postList[i].id;
         blogTitle.textContent = postList[i].title;
         blogContainer.className = 'flex justify-between gap-2';
+        blog.className = 'flex flex-col justify-between gap-2';
         blogBody.textContent = postList[i].content;
         blogEdit.textContent = 'Edit';
         blogRm.textContent = 'Remove';
@@ -187,13 +207,18 @@ function createSpanClass() {
 
 }
 
+function createErrorClass() {
+    const error = document.createElement('span')
+    error.className = 'mt-1 block text-xs font-medium text-red-600'
+    return error;
+}
+
 function validInput(input) {
     input.setCustomValidity('');
-    const label = input.labels[0];
     if (input.validity.typeMismatch) {
-        input.setCustomValidity(`Please enter valid ${label.textContent}`);
+        input.setCustomValidity(`Please enter valid ${input.name}`);
     } else if (input.validity.valueMissing) {
-        input.setCustomValidity(`Please enter the ${label.textContent}`);
+        input.setCustomValidity(`Please enter valid ${input.name}`);
     } else if (input.validity.tooShort) {
         input.setCustomValidity(`Input too short. Must be at least ${input.minLength} characters`)
     }
