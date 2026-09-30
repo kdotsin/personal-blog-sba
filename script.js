@@ -4,12 +4,13 @@ const blogForm = document.querySelector('#blog-form');
 const blogContent = document.getElementById('blog-content')
 const titleError = document.querySelector('.title-error');
 const contentError = document.querySelector('.content-error');
-const savedData = localStorage.getItem('blogPosts');
-let postList = savedData ? JSON.parse(savedData) : [];
-let postId = savedData ? JSON.parse(savedData).id : 0;
+const savedBlogData = localStorage.getItem('blogPosts');
+const savedIdData = localStorage.getItem('globalId');
+let postList = savedBlogData ? JSON.parse(savedBlogData) : [];
+let postId = savedIdData ? savedIdData : 0;
 
 window.addEventListener('load', function(e) {
-    console.log('logic for displaying previous posts')
+    displayContent();
 })
 
 titleInput.addEventListener('input', function(e) {
@@ -56,12 +57,15 @@ function handleSubmitBtn(e) {
     displayContent()
     titleInput.value = '';
     contentInput.value = '';
+    localStorage.setItem('blogPosts', JSON.stringify(postList));
+    localStorage.setItem('globalId', postId);
 }
 
 function handleContentEvents(e) {
     if (e.target.id == 'remove-btn') {
         const targetId = e.target.closest('li').dataset.id;
         deletePost(targetId);
+        localStorage.setItem('blogPosts', JSON.stringify(postList));
     } else if (e.target.id == 'edit-btn') {
         const container = e.target.closest('li');
         const bodyContainer = container.querySelector('#body-container');
@@ -142,6 +146,8 @@ function handleContentEvents(e) {
         span.textContent = newPost.content;
         postContainer.replaceChildren(title, span);
         btnContainer.replaceChildren(newEditBtn, newRmBtn);
+        localStorage.setItem('blogPosts', JSON.stringify(postList));
+        localStorage.setItem('globalId', postId);
     }
 }
 
